@@ -1,0 +1,141 @@
+
+
+CREATE TABLE commandes (
+    id_utilisateur    NUMBER NOT NULL,
+    date_de_commande  VARCHAR2(30) NOT NULL,
+    total_de_commande VARCHAR2(50) NOT NULL
+);
+
+ALTER TABLE commandes ADD CONSTRAINT commandes_pk PRIMARY KEY ( id_utilisateur );
+
+CREATE TABLE detailscommande (
+    id_commande NUMBER NOT NULL,
+    id_jeu      NUMBER NOT NULL,
+    quantité    NUMBER,
+    prix        VARCHAR2(50) NOT NULL
+);
+
+ALTER TABLE detailscommande ADD CONSTRAINT detailscommande_pk PRIMARY KEY ( id_commande );
+
+CREATE TABLE jeuxvideos (
+    titre          VARCHAR2(100) NOT NULL,
+    genre          VARCHAR2(50) NOT NULL,
+    date_de_sortie VARCHAR2(30),
+    prix           VARCHAR2(20) NOT NULL,
+    description    VARCHAR2(100)
+);
+
+ALTER TABLE jeuxvideos ADD CONSTRAINT jeuxvideos_pk PRIMARY KEY ( titre );
+
+CREATE TABLE relation_2 (
+    utilisateurs_nom         VARCHAR2(100) NOT NULL,
+    commandes_id_utilisateur NUMBER NOT NULL
+);
+
+ALTER TABLE relation_2 ADD CONSTRAINT relation_2_pk PRIMARY KEY ( utilisateurs_nom,
+                                                                  commandes_id_utilisateur );
+
+CREATE TABLE relation_3 (
+    jeuxvideos_titre            VARCHAR2(100) NOT NULL,
+    detailscommande_id_commande NUMBER NOT NULL
+);
+
+ALTER TABLE relation_3 ADD CONSTRAINT relation_3_pk PRIMARY KEY ( jeuxvideos_titre,
+                                                                  detailscommande_id_commande );
+
+CREATE TABLE relation_4 (
+    commandes_id_utilisateur    NUMBER NOT NULL,
+    detailscommande_id_commande NUMBER NOT NULL
+);
+
+ALTER TABLE relation_4 ADD CONSTRAINT relation_4_pk PRIMARY KEY ( commandes_id_utilisateur,
+                                                                  detailscommande_id_commande );
+
+CREATE TABLE utilisateurs (
+    nom              VARCHAR2(100) NOT NULL,
+    prenom           VARCHAR2(100) NOT NULL,
+    email            VARCHAR2(100) NOT NULL,
+    mot_de_passe     VARCHAR2(100) NOT NULL,
+    date_inscription VARCHAR2(15)
+);
+
+ALTER TABLE utilisateurs ADD CONSTRAINT utilisateurs_pk PRIMARY KEY ( nom );
+
+ALTER TABLE relation_2
+    ADD CONSTRAINT relation_2_commandes_fk FOREIGN KEY ( commandes_id_utilisateur )
+        REFERENCES commandes ( id_utilisateur );
+
+ALTER TABLE relation_2
+    ADD CONSTRAINT relation_2_utilisateurs_fk FOREIGN KEY ( utilisateurs_nom )
+        REFERENCES utilisateurs ( nom );
+
+ALTER TABLE relation_3
+    ADD CONSTRAINT relation_3_detailscommande_fk FOREIGN KEY ( detailscommande_id_commande )
+        REFERENCES detailscommande ( id_commande );
+
+ALTER TABLE relation_3
+    ADD CONSTRAINT relation_3_jeuxvideos_fk FOREIGN KEY ( jeuxvideos_titre )
+        REFERENCES jeuxvideos ( titre );
+
+ALTER TABLE relation_4
+    ADD CONSTRAINT relation_4_commandes_fk FOREIGN KEY ( commandes_id_utilisateur )
+        REFERENCES commandes ( id_utilisateur );
+
+ALTER TABLE relation_4
+    ADD CONSTRAINT relation_4_detailscommande_fk FOREIGN KEY ( detailscommande_id_commande )
+        REFERENCES detailscommande ( id_commande );
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+BEGIN
+  ORDS.enable_object (
+    p_enabled      => TRUE, -- Default  { TRUE | FALSE }
+    p_schema       => 'RESTSCOTT',
+    p_object       => 'COMMANDES',
+    p_object_type  => 'TABLE', -- Default  { TABLE | VIEW }
+    p_object_alias => 'commandes'
+  );
+
+  COMMIT;
+END;
+/
+
+BEGIN
+  ORDS.enable_object (
+    p_enabled      => TRUE, -- Default  { TRUE | FALSE }
+    p_schema       => 'RESTSCOTT',
+    p_object       => 'UTILISATEURS',
+    p_object_type  => 'TABLE', -- Default  { TABLE | VIEW }
+    p_object_alias => 'utilisateurs'
+  );
+
+  COMMIT;
+END;
+/
+
+BEGIN
+  ORDS.enable_object (
+    p_enabled      => TRUE, -- Default  { TRUE | FALSE }
+    p_schema       => 'RESTSCOTT',
+    p_object       => 'JEUXVIDEOS',
+    p_object_type  => 'TABLE', -- Default  { TABLE | VIEW }
+    p_object_alias => 'jeuxvideos'
+  );
+
+  COMMIT;
+END;
+/
+
+BEGIN
+  ORDS.enable_object (
+    p_enabled      => TRUE, -- Default  { TRUE | FALSE }
+    p_schema       => 'RESTSCOTT',
+    p_object       => 'DETAILSCOMMANDE',
+    p_object_type  => 'TABLE', -- Default  { TABLE | VIEW }
+    p_object_alias => 'detailscommande'
+  );
+
+  COMMIT;
+END;
+/
